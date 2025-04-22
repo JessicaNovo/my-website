@@ -1,18 +1,43 @@
 'use client';
 
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { useDictionary } from 'lib/DictionaryContext'; // Import the context
+import { useRouter } from 'next/navigation'; // Import Next.js routing
 
-const LanguageSwitcher = ({ currentLang }: { currentLang: string }) => {
-  const pathname = usePathname();
+const LanguageSwitcher: React.FC = () => {
+  const { loadDictionary } = useDictionary(); // Access loadDictionary from context
+  const router = useRouter(); // Get the Next.js router instance
+  const [preferredLanguage, setPreferredLanguage] = useState<string>('en'); // Default language state
 
-  const otherLang = currentLang === 'en' ? 'pt' : 'en';
-  const newPath = pathname.replace(`/${currentLang}`, `/${otherLang}`);
+  // Effect to load preferred language from localStorage on component mount
+  useEffect(() => {
+    const savedLanguage = localStorage.getItem('preferredLanguage');
+    if (savedLanguage) {
+      setPreferredLanguage(savedLanguage);
+      loadDictionary(savedLanguage); // Load the corresponding dictionary on mount
+    }
+  }, [loadDictionary]);
+
+  const changeLanguage = async (lang: string): Promise<void> => {
+    localStorage.setItem('preferredLanguage', lang); // Save preference in local storage
+    setPreferredLanguage(lang); // Update the state for rendering
+
+    // Load the new dictionary for the selected language
+    await loadDictionary(lang);
+
+    // Update the route to the new language
+    router.push(`/${lang}`); // Navigate to the language-specific route
+  };
 
   return (
-    <nav style={{ marginBottom: 16 }}>
-      <Link href={newPath}>Switch to {otherLang.toUpperCase()}</Link>
-    </nav>
+    <select
+      value={preferredLanguage}
+      onChange={(e) => changeLanguage(e.target.value)}
+    >
+      <option value="en">English</option>
+      <option value="pt">Portuguese</option>
+      {/* Add more languages as needed */}
+    </select>
   );
 };
 
