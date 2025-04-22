@@ -1,7 +1,6 @@
 import { Language, SUPPORTED_LANGUAGES } from 'lib/languageConfig';
 import { notFound } from 'next/navigation';
 import LanguageSwitcher from 'components/LanguageSwitcher';
-import { useDictionary } from 'lib/DictionaryContext';
 import DictionaryProviderWrapper from '../DictionaryProviderWrapper';
 import { getDictionary } from 'lib/i18n';
 
@@ -20,7 +19,6 @@ export default async function Page({ params }: Props) {
     notFound(); // Redirect user to a 404 page
   }
 
-  // Fetch the localization dictionary for the selected language
   const t = await getDictionary(lang as Language); // Fetch the dictionary when server renders
 
   // Render the main content of the page
@@ -28,7 +26,7 @@ export default async function Page({ params }: Props) {
     <DictionaryProviderWrapper initialDictionaries={{ [lang]: t }}>
       <main>
         {/* Display language switcher component */}
-        <LanguageSwitcher />
+        <LanguageSwitcher currentLang={lang} />
         {/* Use the greeting text from the localization dictionary */}
         <h1>{t.greeting}</h1>{' '}
         {/* Use the description text from the localization dictionary */}

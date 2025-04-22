@@ -19,7 +19,7 @@ export const DictionaryProvider: React.FC<{
 
   const loadDictionary = async (lang: string): Promise<void> => {
     if (!dictionaries[lang]) {
-      const dict = await import(`../locales/${lang}.json`);
+      const dict = await import(`locales/${lang}.json`);
       setDictionaries((prev) => ({ ...prev, [lang]: dict.default }));
     }
   };

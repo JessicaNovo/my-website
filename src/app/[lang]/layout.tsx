@@ -2,6 +2,8 @@ import '../globals.css';
 import { Atkinson_Hyperlegible } from 'next/font/google';
 import CustomHead from 'components/CustomHead';
 import DictionaryProviderWrapper from '../DictionaryProviderWrapper';
+import { getDictionary } from 'lib/i18n';
+import { Language } from 'lib/languageConfig';
 
 // Configure the Atkinson Hyperlegible font including specific weights and character subsets
 const atkinsonHyperlegible = Atkinson_Hyperlegible({
@@ -23,9 +25,12 @@ type Props = {
 export default async function RootLayout({ children, params }: Props) {
   const { lang } = await params; // Await the params to get the selected language
 
+  // Fetch the localization dictionary for the selected language
+  const t = await getDictionary(lang as Language); // Fetch the dictionary when server renders
+
   // Render the overall HTML structure of the page
   return (
-    <DictionaryProviderWrapper>
+    <DictionaryProviderWrapper initialDictionaries={{ [lang]: t }}>
       <html lang={lang}>
         {/* Set the language attribute of the HTML for accessibility */}
         <CustomHead title={siteTitle} description={siteDescription} />
