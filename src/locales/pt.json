@@ -1,0 +1,4 @@
+{
+  "greeting": "Olá!",
+  "description": "Este é um exemplo de i18n no Next.js 15"
+}
